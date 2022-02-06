@@ -1,0 +1,5 @@
+2022/1/28 Start project. Got a empty board with borders to print in terminal.
+2022/1/29 Create path, pokemon center and  poke Mart
+2022/1/30 Working on function createGrass to generation tall grass and debug
+2022/1/31 Finish the debug, continue working on generation clearing
+2022/2/1  Working on generation tree and rock and optimized createGrass algorithm
