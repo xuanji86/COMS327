@@ -1,9 +1,9 @@
-#include<stdio.h>
-#include<time.h>
-#include<string.h>
-#include<stdlib.h>
-#include<curses.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
+#define y 24
+#define x 80
 #define Path '#'
 #define PokeMart 'M'
 #define PokeCenter 'C'
@@ -12,177 +12,170 @@
 #define Clearing '.'
 #define Tree '^'
 
+typedef struct foo{
+    char board[y][x];
+    int north_exit;
+    int south_exit;
+    int west_exit;
+    int east_exit;
+}   foo_t;
 
+void generate_boulders_and_clearings(foo_t *f){
+	int i,j;
+	for(i=0; i<21; i++){
+		for(j=0; j<80; j++){
+			f->board[i][j] = Clearing;
+		}
+	}
+	
+	for(i=0;i<80;i++){
+		f->board[0][i] = Boulder;
+	}
+	
+	for(i=0;i<80;i++){
+		f->board[20][i] = Boulder;
+	}
+	
+	for(i=0;i<21;i++){
+		f->board[i][0] = Boulder;
+	}
+	
+	for(i=0;i<21;i++){
+		f->board[i][79] = Boulder;
+	}
+}
 
-int Width = 80;
-int Height = 21;
-char Map[24][80];
-
-void printMap(){
-    for (int i = 0; i < Height; i++) {
-        for (int j = 0; j < Width; j++) {
-            printf("%c", Map[i][j]);
-            if((j+1) % Width == 0){
-                printf("\n");
+void generate_grass(foo_t *f){
+	//range for each hori line are 1-70
+	//range for veti are 1-19
+	srand(time(NULL));
+	int i,j,try;
+    try = rand()%7+1;
+	for(int k=0;k<=try;k++){
+        i = rand()%19;
+        j = rand()%78;
+        for (int m = i-5; m < i+5; m++)
+        {
+            for (int n = j-5; n < j+5; n++)
+            {  
+                if (m>1 && n>1 && m < 19 && n < 75)
+                {
+                    f->board[m][n] = TallGrass;     
+                }
             }
         }
-    }    
+	}
 }
 
-void createMap(){
-    for(int i = 0; i < Height; i++){
-        for(int j = 0; j < Width; j++){
-            if(i == 0 || i == Height-1){
-                Map[i][j] = Boulder;
-            }else if(j == 0 || j == Width-1){
-                Map[i][j] = Boulder;
-            }else{
-                Map[i][j] = ' ';
-            }
-        }
-    }
-    
+void generate_path(foo_t *f){
+	int i;
+	srand(time(NULL));
+	//range for hori are 4-75
+	//range for verti are 4-16
+	int index_north_exit = rand()%71+4;
+	int index_south_exit = rand()%71+4;
+	int index_west_exit = rand()%12+4;
+	int index_east_exit = rand()%12+4;
+	int index_x_intersec = rand()%71+4;
+	int index_y_intersec = rand()%12+4;
+	
+	f->north_exit = index_north_exit;
+	f->south_exit = index_south_exit;
+	f->west_exit = index_west_exit;
+	f->east_exit = index_east_exit;
 
+	for(i=0;i<=index_y_intersec;i++){
+		f->board[i][index_north_exit] = Path;
+	}
+	
+	for(i=20;i>=index_y_intersec;i--){
+		f->board[i][index_south_exit] = Path;
+	}
+	
+	for(i=0;i<=index_x_intersec;i++){
+		f->board[index_west_exit][i] = Path;
+	}
+	
+	for(i=80;i>=index_x_intersec;i--){
+		f->board[index_east_exit][i] = Path;
+	}
+	
+	if(index_north_exit<index_south_exit){
+		for(i=index_north_exit;i<=index_south_exit;i++){
+			f->board[index_y_intersec][i] = Path;
+		}
+	}
+	
+	else{
+		for(i=index_south_exit;i<=index_north_exit;i++){
+			f->board[index_y_intersec][i] = Path;
+		}
+	}
+	
+	if(index_west_exit<index_east_exit){
+		for(i=index_west_exit;i<=index_east_exit;i++){
+			f->board[i][index_x_intersec] = Path;
+		}
+	}
+	
+	else{
+		for(i=index_east_exit;i<=index_west_exit;i++){
+			f->board[i][index_x_intersec] = Path;
+		}
+	}
+
+	// while(f.board[index_west_exit][i] != '#'){
+	// 	f->board[index_west_exit][i] = '#';
+	// 	i++;
+	// }
 }
 
-void createPaths(){
-    int NExit = rand()%40+40;
-    if(NExit <= 5){
-        NExit+=5;
-    }else if(NExit >75){
-        NExit -= 5;
-    }
-    int WExit = rand()%10+10;
-    if(WExit <= 5){
-        WExit += 5;
-    }else if(WExit >17){
-        WExit-= 5;
-    }
-    int NE = NExit;
-    int WE = WExit;
-
-    Map[0][NE] = Path;
-    Map[WE][0] = Path;
-
-    for(int i = 0; i<NE; i++){
-        Map[WE][i] = Path;
-    }
-    for(int i = 0; i<=WE; i++){
-        Map[i][NE] = Path;
-    }
-
-    int SExit = rand()%40;
-    if(SExit <=5){
-        SExit+=5;
-    }else if(SExit >75){
-        SExit-=5;
-    }
-    int SE = SExit;
-    int EExit = rand()%10;
-        if(EExit < 5){
-        EExit +=5;
-    }else if(EExit > 17){
-        EExit-= 5;
-    }
-    int EE = EExit;
-    Map[20][SE] = Path;
-    Map[EE][79] = Path;
-
-
-    for(int i = SE; i<80; i++){
-        Map[EE][i] = Path;
-    }
-    for(int i = EE; i<21; i++){
-        Map[i][SE] = Path;
-    }
-    Map[EE-1][SE] = PokeCenter;
-    Map[EE-2][SE] = PokeCenter;
-    Map[EE-1][SE+1] = PokeCenter;
-    Map[EE-2][SE+1] = PokeCenter;
-    Map[WE+1][NE] = PokeMart;
-    Map[WE+2][NE] = PokeMart;
-    Map[WE+1][NE+1] = PokeMart;
-    Map[WE+2][NE+1] = PokeMart;
+void generate_center_and_mart(foo_t *f){
+	//center part
+	f->board[1][f->north_exit+1] = PokeCenter;
+	f->board[2][f->north_exit+1] = PokeCenter;
+	f->board[1][f->north_exit+2] = PokeCenter;
+	f->board[2][f->north_exit+2] = PokeCenter;
+	//mart part
+	f->board[f->east_exit-1][77] = PokeMart;
+	f->board[f->east_exit-1][78] = PokeMart;
+	f->board[f->east_exit-2][77] = PokeMart;
+	f->board[f->east_exit-2][78] = PokeMart;
 }
 
-void addGrass(){
-    int Xseek = rand()%75+2;
-    int Yseek = rand()%17+2;
-    int Xgrass = rand()%30 + 3;
-    int Ygrass = rand()%10 + 3;
-    for(int i=0; i< Ygrass; i++){
-        for(int j=0; j<Xgrass; j++){
-            if(Map[Yseek + i][Xseek + j] == ' '){
-                Map[Yseek + i][Xseek + j] = TallGrass;
-            }else{
-                continue;
-            }            
-        }
-    }    
-}
-void createGrass(){
-    int grass_Number = rand()%10 + 4;
-    for(int i = 0 ; i < grass_Number; i++){
-        addGrass();
-    }
-    
+void generate_trees(foo_t *f){
+	for(int i=0;i<30;i++){
+		int rand_x = rand()%71+4;
+		int rand_y = rand()%12+4;
+		if(f->board[rand_y][rand_x] == Clearing){
+			f->board[rand_y][rand_x] = Tree;
+		}
+	}
 }
 
-void createClearing(){
-    for(int i = 0; i< 21 ; i++){
-        for(int j = 0; j<80; j++){
-            if(Map[i][j] == ' '){
-                Map[i][j] = Clearing;
-            }else{
-                continue;
-            }
-        }
-    }
-}
-
-void addTree(){
-    int Xseek = rand()%78+1;
-    int Yseek = rand()%19+1;
-    if(Map[Yseek][Xseek] != Path && Map[Yseek][Xseek] != PokeMart && Map[Yseek][Xseek] != PokeCenter){
-        Map[Yseek][Xseek] = Tree;
-    }else{
-        addTree();
-    }
-}
-
-void createTree(){
-    int tree_Number = rand()%50 + 20;
-    for(int i = 0 ; i< tree_Number ;i++){
-        addTree();
-    }
-}
-
-void addRock(){
-        int Xseek = rand()%78+1;
-    int Yseek = rand()%19+1;
-    if(Map[Yseek][Xseek] != Path && Map[Yseek][Xseek] != PokeMart && Map[Yseek][Xseek] != PokeCenter && Map[Yseek][Xseek] != Tree){
-        Map[Yseek][Xseek] = Boulder;
-    }else{
-        addRock();
-    }
-}
-void createRock(){
-    int Rock_Number = rand()%60 + 10;
-    for(int i = 0 ; i< Rock_Number ;i++){
-        addRock();
-    }
+void generate_rocks(foo_t *f){
+	for(int i=0;i<30;i++){
+		int rand_x = rand()%71+4;
+		int rand_y = rand()%12+4;
+		if(f->board[rand_y][rand_x] == Clearing){
+			f->board[rand_y][rand_x] = Boulder;
+		}
+	}
 }
 
 int main(){
-    initscr();
-    srand(time(NULL));
-    createMap();
-    createPaths();
-    createGrass();
-    createTree();
-    createRock();
-    createClearing();
-    printMap();
-    return 0;
+	foo_t f;
+	generate_boulders_and_clearings(&f);
+	generate_grass(&f);
+	generate_path(&f);
+	generate_center_and_mart(&f);
+	generate_trees(&f);
+	generate_rocks(&f);
+	for(int i = 0; i <y; i++){
+    	for(int j = 0; j <x; j++){
+    		printf("%c",f.board[i][j]);
+    	}
+    	printf("\n");
+    }
+	return 0;
 }
-
