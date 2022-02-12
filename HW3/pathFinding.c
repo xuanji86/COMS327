@@ -12,6 +12,7 @@
 #define Boulder '%'
 #define Clearing '.'
 #define Tree '^'
+#define PC '@'
 #define NULL ((void *)0)
 
 typedef struct board{
@@ -279,6 +280,17 @@ void outputlocation(int currentY, int currentX){
 	printf("\n");
 }
 
+void generate_PC(board_t *f){
+		int rand_x = rand()%71+4;
+		int rand_y = rand()%12+4;
+		if(f->board[rand_y][rand_x] == Clearing){
+			f->board[rand_y][rand_x] = PC;
+		}else{
+			generate_PC(f);
+		}
+		
+}
+
 void generate_map(board_t *World[399][399], int currentY, int currentX){
 	if(World[currentY][currentX]==NULL){
 		srand(time(NULL));
@@ -291,6 +303,7 @@ void generate_map(board_t *World[399][399], int currentY, int currentX){
 		generate_path(World, currentY,currentX, f);
 		float prob = probability(currentY,currentX);
 		generate_center_and_mart(f,prob);
+		generate_PC(f);
 		World[currentY][currentX] = f;
 		printMap(World[currentY][currentX]);
 		outputlocation(currentY, currentX);
@@ -300,6 +313,8 @@ void generate_map(board_t *World[399][399], int currentY, int currentX){
 	}
 
 } 
+
+
 
 int main(){
 	board_t *World[399][399];
