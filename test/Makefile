@@ -3,15 +3,10 @@ CXX = g++
 ECHO = echo
 RM = rm -f
 
-TERM = "S2019"
-
-CFLAGS = -Wall -Werror -ggdb -funroll-loops -DTERM=$(TERM)
-CXXFLAGS = -Wall -Werror -ggdb -funroll-loops -DTERM=$(TERM)
-
 LDFLAGS = 
 
-BIN = poke327
-OBJS = poke327.o heap.o
+BIN = TerrianGen
+OBJS = TerrianGen.o
 
 all: $(BIN) etags
 
@@ -38,3 +33,7 @@ clean:
 clobber: clean
 	@$(ECHO) Removing backup files
 	@$(RM) *~ \#* *pgm
+
+etags:
+	@$(ECHO) Updating TAGS
+	@etags *.[ch]

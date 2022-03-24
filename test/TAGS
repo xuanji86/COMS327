@@ -1,0 +1,65 @@
+
+TerrianGen.c,1682
+#define true 10,356
+#define false 11,371
+typedef struct node 14,481
+    int data;15,503
+    int priority;18,564
+    struct node* next;20,584
+} Node;22,609
+Node* newNode(25,726
+int peek(35,994
+void pop(41,1188
+void push(48,1401
+int isEmptyQ(80,2280
+int entry[entry85,2362
+int exitt[exitt86,2376
+int pathResult[pathResult87,2390
+int pc[pc89,2410
+int weightMap[weightMap90,2421
+char world[world92,2445
+int pathNS[pathNS93,2475
+int pathEW[pathEW94,2490
+int hLoc[hLoc97,2532
+int rLoc[rLoc98,2547
+int bLoc[bLoc99,2562
+int pLoc[pLoc100,2577
+int wLoc[wLoc101,2592
+int sLoc[sLoc102,2607
+int nLoc[nLoc103,2622
+int hLocNew[hLocNew105,2638
+int rLocNew[rLocNew106,2656
+int bLocNew[bLocNew107,2674
+int pLocNew[pLocNew108,2692
+int wLocNew[wLocNew109,2710
+int sLocNew[sLocNew110,2728
+int nLocNew[nLocNew111,2746
+int hLocPrev[hLocPrev113,2765
+int rLocPrev[rLocPrev114,2784
+int bLocPrev[bLocPrev115,2803
+int pLocPrev[pLocPrev116,2822
+int wLocPrev[wLocPrev117,2841
+int sLocPrev[sLocPrev118,2860
+int nLocPrev[nLocPrev119,2879
+char wanderType[wanderType121,2899
+int pLocDir[pLocDir122,2921
+int wLocDir[wLocDir123,2939
+int nLocDir[nLocDir124,2957
+Node* pqNPC;125,2975
+void dijkstra(127,2990
+void genEastWestPath(162,3805
+void genNorthSouthPath(256,6439
+int isEmpty(350,9067
+void genTallGrass(384,10107
+void genCenterAndMart(454,12255
+void genSeed(520,14511
+void printSeed(567,16043
+void checkMap(588,17031
+void setPlayer(679,19288
+void fillWeightMap(690,19532
+void moveNPC(724,20549
+void getDistMaps(880,27440
+void placeNPCs(907,28098
+void changeNPCLoc(1004,31984
+void runMaps(1059,33605
+int main(1094,34550
