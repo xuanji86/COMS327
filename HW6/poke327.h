@@ -6,7 +6,7 @@
 
 # include "heap.h"
 
-typedef struct character character_t;
+class character_t;
 
 #define malloc(size) ({          \
   void *_tmp;                    \
@@ -61,25 +61,27 @@ typedef enum __attribute__ ((__packed__)) terrain_type {
   num_terrain_types
 } terrain_type_t;
 
-typedef struct map {
+class map_t {
+  public:
   terrain_type_t map[MAP_Y][MAP_X];
   uint8_t height[MAP_Y][MAP_X];
   character_t *cmap[MAP_Y][MAP_X];
   heap_t turn;
   int32_t num_trainers;
   int8_t n, s, e, w;
-} map_t;
+};
 
-typedef struct npc npc_t;
-typedef struct pc pc_t;
+class npc_t;
+class pc_t;
 /* Here instead of character.h to abvoid including character.h */
-typedef struct character {
+class character_t {
+  public:
   npc_t *npc;
   pc_t *pc;
   pair_t pos;
   char symbol;
   int next_turn;
-} character_t;
+};
 
 typedef struct world {
   map_t *world[WORLD_SIZE][WORLD_SIZE];

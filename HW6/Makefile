@@ -39,9 +39,6 @@ clobber: clean
 	@$(ECHO) Removing backup files
 	@$(RM) *~ \#* *pgm
 
-parser:
-	g++ -o parser parser.cpp
-
 etags:
 	@$(ECHO) Updating TAGS
 	@etags *.[ch]
