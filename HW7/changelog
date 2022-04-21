@@ -1,0 +1,12 @@
+4/2
+start base on professors code 1.06
+parsed stats.csv and pokemon.csv
+
+4/4
+add function wipe_screen() get_move() and poke_detect()
+
+4/5
+keep working on implementing the function poke_detect() and add poke battle stuff
+
+4/7
+UI improvement, debug, write readme
